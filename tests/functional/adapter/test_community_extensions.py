@@ -28,6 +28,7 @@ class BaseCommunityExtensions:
             "name": "base",
         }
 
+    @pytest.mark.skip(reason="Cannot install this extension for nightly release")
     def test_base(self, project):
 
         # run command
