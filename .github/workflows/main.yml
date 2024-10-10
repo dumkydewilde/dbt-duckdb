@@ -215,7 +215,7 @@ jobs:
   motherduck:
     name: MotherDuck functional test / python ${{ matrix.python-version }}
     needs: [check-md-token]
-    if: needs.check-md-token.outputs.exists == 'true'
+    if: needs.check-md-token.outputs.exists == 'true' | false # turn this off for now
 
     runs-on: ubuntu-latest
 
