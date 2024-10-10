@@ -183,7 +183,9 @@ class Environment(abc.ABC):
                         conn.execute(f"install {ext.name} from {ext.repo}")
                         conn.load_extension(ext.name)
                     except duckdb.HTTPException:
-                        log.info(f"Skipping installing extension {ext.name} because it is not yet available")
+                        log.info(
+                            f"Skipping installing extension {ext.name} because it is not yet available"
+                        )
 
         # Attach any fsspec filesystems on the database
         if creds.filesystems:
