@@ -1,5 +1,6 @@
 import abc
 import importlib.util
+import logging
 import os
 import sys
 import tempfile
@@ -18,6 +19,8 @@ from ..utils import SourceConfig
 from ..utils import TargetConfig
 from dbt.adapters.contracts.connection import AdapterResponse
 from dbt.adapters.contracts.connection import Connection
+
+log = logging.getLogger(__name__)
 
 
 def _ensure_event_loop():
@@ -176,8 +179,11 @@ class Environment(abc.ABC):
                         ext = Extension(**extension)
                     except Exception as e:
                         raise DbtRuntimeError(f"Failed to parse extension: {e}")
-                    conn.execute(f"install {ext.name} from {ext.repo}")
-                    conn.load_extension(ext.name)
+                    try:
+                        conn.execute(f"install {ext.name} from {ext.repo}")
+                        conn.load_extension(ext.name)
+                    except duckdb.HTTPException:
+                        log.info(f"Skipping installing extension {ext.name} because it is not yet available")
 
         # Attach any fsspec filesystems on the database
         if creds.filesystems:
